@@ -15,23 +15,18 @@ function App() {
 
   function handleToggle(id: Item["id"]) {
     // Should implement
-    setItems((items) =>
-      items.map((item) => (item.id === id ? {...item, completed: !item.completed} : item)),
-    );
   }
 
   function handleAdd(event: React.ChangeEvent<Form>) {
     event.preventDefault();
 
-    if (event.target.text.value !== "") {
-      let newTodo = {
+    setItems((items) =>
+      items.concat({
         id: +new Date(),
         completed: false,
         text: event.target.text.value,
-      };
-
-      setItems((items) => [...items, newTodo]);
-    }
+      }),
+    );
 
     event.target.text.value = "";
   }
@@ -44,11 +39,7 @@ function App() {
     api
       .list()
       .then(setItems)
-      .finally(() =>
-        setTimeout(() => {
-          toggleLoading(false);
-        }, 1000),
-      );
+      .finally(() => toggleLoading(false));
   }, []);
 
   if (isLoading) return "Loading...";
@@ -57,7 +48,7 @@ function App() {
     <main className={styles.main}>
       <h1>Supermarket list</h1>
       <form onSubmit={handleAdd}>
-        <input id="text" name="text" type="text" />
+        <input name="text" type="text" />
         <button>Add</button>
       </form>
       <ul>
