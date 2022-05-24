@@ -33,14 +33,32 @@ const PRODUCTS: Product[] = [
   },
 ];
 
+function SortArray(x: Product, y: Product) {
+  if (x.title < y.title) return -1;
+  if (x.title > y.title) return 1;
+
+  return 0;
+}
+
 const api = {
   search: (query?: string): Promise<Product[]> => {
     let results = PRODUCTS;
 
     if (query) {
       results = results.filter((product) => {
-        return product.title.includes(query);
+        return product.title.toLocaleLowerCase().includes(query);
       });
+    }
+
+    return new Promise((resolve) => setTimeout(() => resolve(results), 1000));
+  },
+  filter: (query?: string): Promise<Product[]> => {
+    let results = [...PRODUCTS];
+
+    if (query === "precio") {
+      results = results.sort((a, b) => a.price - b.price);
+    } else if (query === "alfa") {
+      results = results.sort(SortArray);
     }
 
     return new Promise((resolve) => setTimeout(() => resolve(results), 1000));
